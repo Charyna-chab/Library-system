@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Books extends Model
 {
     use HasFactory;
+    protected $fillable = ['title','category_id','author_id'];
 
     public function Category(){
         return $this->belongsTo(Category::class);
