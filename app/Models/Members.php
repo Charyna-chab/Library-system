@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Members extends Model
 {
     use HasFactory;
+    protected $fillable = ['name', 'age', 'email', 'address'];
 
     public function Borrowing()
     {
