@@ -46,7 +46,7 @@ class BooksController extends Controller
         if (!$books){
             return response()->join([
                 'status' => 'error',
-                'message' => 'teacher not found'
+                'message' => 'Book not found'
             ], 404);
         }
         return response()->json($books);
@@ -70,7 +70,7 @@ class BooksController extends Controller
      */
     public function destroy($id)
     {
-         $books = Books::find($id);
+        $books = Books::find($id);
         if (!$books){
             return response()->json(['message' => 'Books not found'], 404);
         }

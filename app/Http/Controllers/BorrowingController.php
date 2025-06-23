@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
 
@@ -12,7 +12,11 @@ class BorrowingController extends Controller
      */
     public function index()
     {
-        //
+        $borrowing = Borrowing::all();
+         return response()->json([
+            'status' => 'Borrowing',
+            'data' => $borrowing
+        ]);
     }
 
     /**
@@ -20,30 +24,60 @@ class BorrowingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $borrowing = new Borrowing();
+        $borrowing->book_id = $request->input('book_id');
+        $borrowing->member_id = $request->input('member_id');
+        $borrowing->borrowed_at = $request->input('borrowed_at');
+        $borrowing->returned_at = $request->input('returned_at');
+        $borrowing->save();
+        return response()->json([
+            'status' => 'Borrowing success',
+            'date' => $borrowing
+        
+        ]);
+
+
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Borrowing $borrowing)
+    public function show($id)
     {
-        //
+        $borrowing = DB::table('borrowing')->find($id);
+        if(!$borrowing){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Borrowing not found'
+            ],404);
+        }
+        return response()->json($borrowing);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Borrowing $borrowing)
+    public function update(Request $fillable,$id)
     {
-        //
+        $borrowing = Borrowing::find($id);
+        if (!$borrowing){
+            return response()->json(['message' => 'Borrowing not found'], 404);
+        }
+        $borrowing->update($fillable->all());
+        return response()->json($borrowing);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Borrowing $borrowing)
+    public function destroy($id)
     {
-        //
+         $borrowing = Borrowing::find($id);
+        if (!$borrowing){
+            return response()->json(['message' => 'Borrowing not found'], 404);
+        }
+        $borrowing->delete();
+        return response()->json(['message' => 'Borrowing deletes successfully']);
     }
 }
