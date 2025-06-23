@@ -12,7 +12,11 @@ class BooksController extends Controller
      */
     public function index()
     {
-        //
+        $books = Books::all();
+        return response()->json([
+            'status' => 'success',
+            'data' => $books
+        ]);
     }
 
     /**
