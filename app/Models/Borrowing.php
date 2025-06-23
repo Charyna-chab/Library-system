@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Borrowing extends Model
 {
     use HasFactory;
-    protected $fillable = ['borrowed-at','returned_at'];
+    protected $fillable = ['book_id','member_id','borrowed-at','returned_at'];
 
     public function Books(){
         return $this->belongsTo(Books::class);

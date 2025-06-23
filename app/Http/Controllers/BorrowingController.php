@@ -25,6 +25,8 @@ class BorrowingController extends Controller
     public function store(Request $request)
     {
         $borrowing = new Borrowing();
+        $borrowing->book_id = $request->input('book_id');
+        $borrowing->member_id = $request->input('member_id');
         $borrowing->borrowed_at = $request->input('borrowed_at');
         $borrowing->returned_at = $request->input('returned_at');
         $borrowing->save();
