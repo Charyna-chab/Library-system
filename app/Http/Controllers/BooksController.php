@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Books;
 use Illuminate\Http\Request;
+use App\Http\Requests\Book\StoreBookRequest;
+use App\Http\Requests\Book\UpdateBookRequest;
+
 
 class BooksController extends Controller
 {
@@ -23,16 +26,12 @@ class BooksController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBookRequest $request)
     {
-        $books = new Books();
-        $books->title = $request->input('title');
-        $books->category_id = $request->input('category_id');
-        $books->author_id = $request->input('author_id');
-        $books->save();
+        $book = Books::create($request->validated());
         return response()->json([
             'status' => 'success',
-            'data' => $books
+            'data' => $book
         ]);
 
     }
@@ -55,13 +54,13 @@ class BooksController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $fillable, $id)
+    public function update(UpdateBookRequest $request, $id)
     {
         $books = Books::find($id);
         if (!$books){
             return response()->json(['message' => 'Books not found'], 404);
         }
-        $books->update($fillable->all());
+        $books->update($request->validated());
         return response()->json($books);
     }
 
