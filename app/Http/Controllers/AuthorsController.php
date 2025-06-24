@@ -40,24 +40,23 @@ class AuthorsController extends Controller
      */
     public function show(Authors $authors)
     {
-        $authors->load('books'); // Load books relationship
+        $authors->load('authors'); // Load books relationship
         return response()->json(['status' => 'success', 'data' => $authors]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Authors $authors)
+    public function update(Request $fillable, $id)
     {
-        $validated = $request->validate([
-            'FirstName' => 'sometimes|required|string|max:255',
-            'LastName' => 'sometimes|required|string|max:255',
-            'Nationality' => 'sometimes|required|string|max:255',
-        ]);
-
-        $authors->update($validated);
-        return response()->json(['status' => 'success', 'data' => $authors]);
+        $authors = Authors::find($id);
+        if (!$authors) {
+            return response()->json(['message' => 'members not found'], 404);
+        }
+        $authors->update($fillable->all());
+        return response()->json($authors);
     }
+
 
     /**
      * Remove the specified resource from storage.
