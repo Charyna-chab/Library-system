@@ -51,7 +51,7 @@ class MembersController extends Controller
      */
     public function show($id)
     {
-        $members = DB::table('books')->find($id);
+        $members = DB::table('members')->find($id);
         if (!$members) {
             return response()->join([
                 'status' => 'error',
@@ -66,7 +66,7 @@ class MembersController extends Controller
      */
     public function update(Request $fillable, $id)
     {
-        $members = members::find($id);
+        $members = Members::find($id);
         if (!$members) {
             return response()->json(['message' => 'members not found'], 404);
         }
