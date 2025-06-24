@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Authors;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\Authors\StoreAuthorRequest;
+use App\Http\Requests\Authors\UpdateAuthorRequest;
+use PharIo\Manifest\Author;
 
 class AuthorsController extends Controller
 {
@@ -23,47 +27,55 @@ class AuthorsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreAuthorRequest $request)
     {
-        $validated = $request->validate([
-            'FirstName' => 'required|string|max:255',
-            'LastName' => 'required|string|max:255',
-            'Nationality' => 'required|string|max:255',
-        ]);
-
-        $author = Authors::create($validated);
+       $author = Authors::create($request->validated());
         return response()->json(['status' => 'success', 'data' => $author], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Authors $authors)
+    public function show($id)
     {
-        $authors->load('authors'); // Load books relationship
+        $authors = DB::table('authors')->find($id);
+        if (!$authors){
+            return response()->join([
+                'status' => 'error',
+                'message' => 'Authors not found'
+            ], 404);
+        }
         return response()->json(['status' => 'success', 'data' => $authors]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $fillable, $id)
+        public function update(UpdateAuthorRequest $request, $id)
     {
-        $authors = Authors::find($id);
-        if (!$authors) {
-            return response()->json(['message' => 'members not found'], 404);
+        $author = Authors::find($id);
+
+        if (!$author) {
+            return response()->json(['message' => 'Author not found'], 404);
         }
-        $authors->update($fillable->all());
-        return response()->json($authors);
+
+        $author->update($request->validated());
+
+        return response()->json(['status' => 'success', 'data' => $author]);
     }
+
 
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Authors $authors)
+    public function destroy($id)
     {
+       $authors = Authors::find($id);
+        if (!$authors){
+            return response()->json(['message' => 'Authors not found'], 404);
+        }
         $authors->delete();
-        return response()->json(['status' => 'success'], 204);
+        return response()->json(['message' => 'Authors deletes successfully']);
     }
 }
