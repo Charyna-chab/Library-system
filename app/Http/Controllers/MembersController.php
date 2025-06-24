@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Members;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\Http\Requests\Members\StoreMemberRequest;
+use App\Http\Requests\Members\UpdateMemberRequest;
 class MembersController extends Controller
 {
     /**
@@ -13,36 +14,24 @@ class MembersController extends Controller
      */
     public function index()
     {
-        $category = Members::all();
+        $members = Members::all();
         return response()->json([
             'status' => 'success',
-            'data' => $category
+            'data' => $members
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMemberRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'age' => 'nullable|string|max:3',
-            'email' => 'required|email|unique:members,email',
-            'address' => 'nullable|string|max:255',
-        ]);
-
-        $member = new Members();
-        $member->name = $request->input('name');
-        $member->age = $request->input('age');
-        $member->email = $request->input('email');
-        $member->address = $request->input('address');
-        $member->save();
+        $member = Members::create($request->validated());
 
         return response()->json([
             'status' => 'success',
             'data' => $member
-        ]);
+        ],201);
     }
 
 
@@ -51,27 +40,27 @@ class MembersController extends Controller
      */
     public function show($id)
     {
-        $members = DB::table('members')->find($id);
-        if (!$members) {
-            return response()->join([
+        $member = DB::table('members')->find($id);
+        if (!$member) {
+            return response()->json([
                 'status' => 'error',
                 'message' => 'teacher not found'
             ], 404);
         }
-        return response()->json($members);
+        return response()->json([ 'status' => 'success', 'data' => $member]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $fillable, $id)
+    public function update(UpdateMemberRequest $request, $id)
     {
-        $members = Members::find($id);
-        if (!$members) {
+        $member = Members::find($id);
+        if (!$member) {
             return response()->json(['message' => 'members not found'], 404);
         }
-        $members->update($fillable->all());
-        return response()->json($members);
+        $member->update($request->validated());
+        return response()->json([ 'status' => 'success', 'data' => $member],200);
     }
 
     /**
@@ -79,11 +68,11 @@ class MembersController extends Controller
      */
     public function destroy($id)
     {
-        $category = Members::find($id);
-        if (!$category) {
+        $members = Members::find($id);
+        if (!$members) {
             return response()->json(['message' => 'Member not found'], 404);
         }
-        $category->delete();
+        $members->delete();
         return response()->json(['message' => 'Member deletes successfully']);
     }
 }

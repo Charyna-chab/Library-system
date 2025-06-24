@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Authors\UpdateAuthorRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\Category\StoreCategoryRequest;
+use App\Http\Requests\Category\UpdateCategoryRequest;
 class CategoryController extends Controller
 {
     /**
@@ -22,11 +25,9 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $category = new Category();
-        $category->category_name = $request->input('category_name');
-        $category->save();
+        $category = Category::create($request ->validated());
          return response()->json([
             'status' => 'success',
             'data' => $category
@@ -38,7 +39,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = DB::table('books')->find($id);
+        $category = DB::table('categories')->find($id);
         if (!$category){
             return response()->join([
                 'status' => 'error',
@@ -51,13 +52,13 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $fillable, $id)
+    public function update(UpdateCategoryRequest $request, $id)
     {
        $category = Category::find($id);
         if (!$category){
             return response()->json(['message' => 'Category not found'], 404);
         }
-        $category->update($fillable->all());
+        $category->update($request->validated());
         return response()->json($category);
     }
 

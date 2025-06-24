@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Authors;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Authors\StoreAuthorRequest;
 use App\Http\Requests\Authors\UpdateAuthorRequest;
-use PharIo\Manifest\Author;
 
 class AuthorsController extends Controller
 {
