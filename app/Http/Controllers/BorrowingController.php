@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\Borrowing\StoreBorrowRequest;
+use App\Http\Requests\Borrowing\UpdateBorrowRequest;
 class BorrowingController extends Controller
 {
     /**
@@ -22,14 +23,10 @@ class BorrowingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreBorrowRequest $request)
     {
-        $borrowing = new Borrowing();
-        $borrowing->book_id = $request->input('book_id');
-        $borrowing->member_id = $request->input('member_id');
-        $borrowing->borrowed_at = $request->input('borrowed_at');
-        $borrowing->returned_at = $request->input('returned_at');
-        $borrowing->save();
+        
+        $borrowing = Borrowing::create($request->validated());
         return response()->json([
             'status' => 'Borrowing success',
             'date' => $borrowing
@@ -58,13 +55,13 @@ class BorrowingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $fillable,$id)
+    public function update(UpdateBorrowRequest $request,$id)
     {
         $borrowing = Borrowing::find($id);
         if (!$borrowing){
             return response()->json(['message' => 'Borrowing not found'], 404);
         }
-        $borrowing->update($fillable->all());
+        $borrowing->update($request->validated());
         return response()->json($borrowing);
     }
 
