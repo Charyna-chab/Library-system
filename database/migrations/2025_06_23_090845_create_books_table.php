@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->unsignedBigInteger('category_id')->nullable(); // Foreign key, not primary
-            $table->unsignedBigInteger('author_id')->nullable(); // Foreign key, not primary
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
-            $table->foreign('author_id')->references('id')->on('authors')->onDelete('set null');
+            $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('set null');
+            $table->foreignId('author_id')->nullable()->constrained('authors')->onDelete('set null');
             $table->timestamps();
         });
     }

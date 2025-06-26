@@ -23,8 +23,8 @@ class UpdateBookRequest extends FormRequest
     {
         return [
             'title' => 'required|string',
-            'category_id' => 'required|numeric',
-            'author_id' => 'required|numeric',
+            'category_id' => 'required|exists:categories,id',
+            'author_id' => 'required|exists:authors,id',
         ];
     }
 }
